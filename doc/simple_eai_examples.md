@@ -4,61 +4,45 @@ This EAI handler simply populates its confInfo object with two stanzas. The hand
 feed output:
 
 ```
-$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/admin/rest_examples/simple_eai
+$ curl -s -k -u admin:changed https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai
 <?xml version="1.0" encoding="UTF-8"?>
 <!--This is to override browser formatting; see server.conf[httpServer] to disable. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .-->
 <?xml-stylesheet type="text/xml" href="/static/atom.xsl"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:s="http://dev.splunk.com/ns/rest" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:s="http://dev.splunk.com/ns/rest">
   <title></title>
-  <id>https://localhost:8089/servicesNS/admin/rest_examples/simple_eai</id>
-  <updated>2016-09-29T00:02:56-04:00</updated>
+  <id>https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai</id>
+  <updated>2016-09-29T10:10:12-04:00</updated>
   <generator build="2f8cf215be08" version="6.5.0"/>
   <author>
     <name>Splunk</name>
   </author>
-  <link href="/servicesNS/admin/rest_examples/simple_eai/_acl" rel="_acl"/>
-  <opensearch:totalResults>1</opensearch:totalResults>
-  <opensearch:itemsPerPage>30</opensearch:itemsPerPage>
-  <opensearch:startIndex>0</opensearch:startIndex>
   <s:messages/>
   <entry>
-    <title>stanza1</title>
-    <id>https://localhost:8089/servicesNS/admin/rest_examples/simple_eai/stanza1</id>
-    <updated>2016-09-29T00:02:56-04:00</updated>
-    <link href="/servicesNS/admin/rest_examples/simple_eai/stanza1" rel="alternate"/>
+    <title>nonpersistent</title>
+    <id>https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent</id>
+    <updated>2016-09-29T10:10:12-04:00</updated>
+    <link href="/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent" rel="alternate"/>
     <author>
       <name>system</name>
     </author>
-    <link href="/servicesNS/admin/rest_examples/simple_eai/stanza1" rel="list"/>
+    <link href="/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent" rel="list"/>
+    <link href="/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent/_acl" rel="_acl"/>
     <content type="text/xml">
-      <s:dict>
-        <s:key name="attr">abcd</s:key>
-        <s:key name="eai:acl">
-          <s:dict>
-            <s:key name="app"></s:key>
-            <s:key name="can_list">1</s:key>
-            <s:key name="can_write">1</s:key>
-            <s:key name="modifiable">0</s:key>
-            <s:key name="owner">system</s:key>
-            <s:key name="perms">
-              <s:dict>
-                <s:key name="read">
-                  <s:list>
-                    <s:item>*</s:item>
-                  </s:list>
-                </s:key>
-                <s:key name="write">
-                  <s:list>
-                    <s:item>*</s:item>
-                  </s:list>
-                </s:key>
-              </s:dict>
-            </s:key>
-            <s:key name="removable">0</s:key>
-            <s:key name="sharing">system</s:key>
-          </s:dict>
-        </s:key>
-      </s:dict>
+      <s:dict/>
+    </content>
+  </entry>
+  <entry>
+    <title>persistent</title>
+    <id>https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai/persistent</id>
+    <updated>2016-09-29T10:10:12-04:00</updated>
+    <link href="/servicesNS/admin/splunk-rest-examples/simple_eai/persistent" rel="alternate"/>
+    <author>
+      <name>system</name>
+    </author>
+    <link href="/servicesNS/admin/splunk-rest-examples/simple_eai/persistent" rel="list"/>
+    <link href="/servicesNS/admin/splunk-rest-examples/simple_eai/persistent/_acl" rel="_acl"/>
+    <content type="text/xml">
+      <s:dict/>
     </content>
   </entry>
 </feed>
@@ -67,7 +51,7 @@ $ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/admin/rest_exam
 or as JSON:
 
 ```
-$ curl -s -k -u admin:changeme https://localhost:8089/services/simple_eai?output_mode=json | python -m json.tool
+$ curl -s -k -u admin:changed https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai?output_mode=json | python -m json.tool
 {
     "entry": [
         {
@@ -77,45 +61,55 @@ $ curl -s -k -u admin:changeme https://localhost:8089/services/simple_eai?output
                 "can_write": true,
                 "modifiable": false,
                 "owner": "system",
-                "perms": {
-                    "read": [
-                        "*"
-                    ],
-                    "write": [
-                        "*"
-                    ]
-                },
+                "perms": null,
                 "removable": false,
                 "sharing": "system"
             },
             "author": "system",
             "content": {
-                "attr": "abcd",
                 "eai:acl": null
             },
-            "id": "https://localhost:8089/services/simple_eai/stanza1",
+            "id": "https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent",
             "links": {
-                "alternate": "/services/simple_eai/stanza1",
-                "list": "/services/simple_eai/stanza1"
+                "_acl": "/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent/_acl",
+                "alternate": "/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent",
+                "list": "/servicesNS/admin/splunk-rest-examples/simple_eai/nonpersistent"
             },
-            "name": "stanza1",
-            "updated": "2016-09-29T00:03:48-04:00"
+            "name": "nonpersistent",
+            "updated": "2016-09-29T10:11:18-04:00"
+        },
+        {
+            "acl": {
+                "app": "",
+                "can_list": true,
+                "can_write": true,
+                "modifiable": false,
+                "owner": "system",
+                "perms": null,
+                "removable": false,
+                "sharing": "system"
+            },
+            "author": "system",
+            "content": {
+                "eai:acl": null
+            },
+            "id": "https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai/persistent",
+            "links": {
+                "_acl": "/servicesNS/admin/splunk-rest-examples/simple_eai/persistent/_acl",
+                "alternate": "/servicesNS/admin/splunk-rest-examples/simple_eai/persistent",
+                "list": "/servicesNS/admin/splunk-rest-examples/simple_eai/persistent"
+            },
+            "name": "persistent",
+            "updated": "2016-09-29T10:11:18-04:00"
         }
     ],
     "generator": {
         "build": "2f8cf215be08",
         "version": "6.5.0"
     },
-    "links": {
-        "_acl": "/services/simple_eai/_acl"
-    },
+    "links": {},
     "messages": [],
-    "origin": "https://localhost:8089/services/simple_eai",
-    "paging": {
-        "offset": 0,
-        "perPage": 30,
-        "total": 1
-    },
-    "updated": "2016-09-29T00:03:48-04:00"
+    "origin": "https://localhost:8089/servicesNS/admin/splunk-rest-examples/simple_eai",
+    "updated": "2016-09-29T10:11:18-04:00"
 }
 ```

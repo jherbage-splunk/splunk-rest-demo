@@ -14,7 +14,7 @@ dictionary. The user and app context used to invoke the handler will also affect
 - [Using namespace context](#namespace)
 - [Using user and namespace context](#user)
 - [Invalid context errors](#invalid)
-- [Persistent request payload format](#persistentpayload)
+- [Persistent request payload format](#persistentrequest)
 - [Persistent reply payload format](#persistentreply)
 
 ### <a name="basic"></a>Basic usage

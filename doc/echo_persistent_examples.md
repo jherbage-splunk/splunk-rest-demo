@@ -250,7 +250,7 @@ Making a request to the handler under a specific namespace context will result i
 the argument dictionary. Note that the "user" is "-", which indicates the "wildcard" or "all apps" context.
 
 ```
-$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/-/rest_examples/echo_persistent | python -m json.tool
+$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/-/splunk-rest-examples/echo_persistent | python -m json.tool
 {
     "connection": {
         "listening_port": 8089,
@@ -278,7 +278,7 @@ $ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/-/rest_examples
     ],
     "method": "GET",
     "ns": {
-        "app": "rest_examples"
+        "app": "splunk-rest-examples"
     },
     "output_mode": "xml",
     "output_mode_explicit": false,
@@ -317,7 +317,7 @@ Adding a specific user to the context will result in the addition of the "user" 
 dictionary.
 
 ```
-$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/admin/rest_examples/echo_persistent | python -m json.tool
+$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/admin/splunk-rest-examples/echo_persistent | python -m json.tool
 {
     "connection": {
         "listening_port": 8089,
@@ -345,7 +345,7 @@ $ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/admin/rest_exam
     ],
     "method": "GET",
     "ns": {
-        "app": "rest_examples",
+        "app": "splunk-rest-examples",
         "user": "admin"
     },
     "output_mode": "xml",
@@ -385,7 +385,7 @@ However, trying to view objects in a nonexistent context will result in an error
 JSON-formatted.
 
 ```
-$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/NOSUCHUSER/rest_examples/echo_persistent
+$ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/NOSUCHUSER/splunk-rest-examples/echo_persistent
 <?xml version="1.0" encoding="UTF-8"?>
 <response>
   <messages>
@@ -397,7 +397,7 @@ $ curl -s -k -u admin:changeme https://localhost:8089/servicesNS/NOSUCHUSER/rest
 HTTP status code should be used to determine whether or not a request succeeded:
 
 ```
-$ curl -s -k -u admin:changeme -o /dev/null -w "%{http_code}\n" https://localhost:8089/servicesNS/NOSUCHUSER/rest_examples/echo_persistent
+$ curl -s -k -u admin:changeme -o /dev/null -w "%{http_code}\n" https://localhost:8089/servicesNS/NOSUCHUSER/splunk-rest-examples/echo_persistent
 404
 ```
 

@@ -34,7 +34,8 @@ The Extensible Administration Interface is the interface used by Splunk Core dev
 interface to accommodate new adminstrative capabilities. The saved searches administration UI is a (complex) example of 
 an interface driven by an EAI handler. The EAI interface provides certain services such as pagination, role-based access 
 control, and namespacing to the developer; however, for the developer, writing an EAI handler is generally more complex 
-than. EAI handlers can provide output in Atom feed format or (in more recent Splunk versions) as JSON.
+than writing a "new-style" handler. EAI handlers can provide output in Atom feed format or (in more recent Splunk versions)
+as JSON.
 
 ## Persistence
 
@@ -69,7 +70,11 @@ mode transparently, with no code changes required.
 ###Usage via splunkd
 
 Access to custom REST handlers via splunkd, which listens on port 8089, can be performed from localhost using the "curl"
-utility.
+utility, similar to any other Splunk REST endpoint.
+
+```
+curl -k -u admin:changeme https://localhost:8089/services/echo_persistent
+```
 
 ###Usage via splunkweb
 

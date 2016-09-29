@@ -92,3 +92,9 @@ curl -k https://localhost:8000/en-US/splunkd/__raw/services/echo_persistent \
 ```
 
 Note that the URL should be rooted at /splunkd/__raw as shown above.
+
+###License
+
+No license, warranty, or claim of correctness for this code is provided, promised, or implied. This code is provided solely
+for educational purposes and may not reflect the actual state of Splunk's product line. Please direct all complaints to the
+author.

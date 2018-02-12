@@ -5,7 +5,11 @@ The handler receives all its arguments as a JSON string, which is convertible to
 map structure in other programming languages.
 
 Depending on the restmap.conf parameters for the rest handler, however, certain attributes may be missing from the 
-dictionary. The user and app context used to invoke the handler will also affect the available attributes.
+JSON. The user and app context used to invoke the handler will also affect the available attributes.
+
+The following examples should mimic closely the behavior of the "echo_persistent" handler on a system where this
+Splunk app is installed. This handler simply echoes the original input back as a JSON string; this is a good way to see
+how the various calling conventions will affect the input your script receives.
 
 ## Contents
 - [Basic usage](#basic)
@@ -16,6 +20,7 @@ dictionary. The user and app context used to invoke the handler will also affect
 - [Invalid context errors](#invalid)
 - [Persistent request payload format](#persistentrequest)
 - [Persistent reply payload format](#persistentreply)
+- [Multiformat requests](#rawrequests)
 
 ### <a name="basic"></a>Basic usage
 
@@ -486,4 +491,128 @@ The new-style persistent REST reply format is documented below.
       "payload" = {obj} / [array],    # ...or it can be a JSON object (which implies that we should return a JSON content type)
       "payload" = Null,               # ...or we want to explicitly send nothing (implies status 204)
    }
+```
+
+## <a name="multiformatrequests"></a>Multiformat Requests
+
+One of the key use cases of the persistent REST handler framework is to enable the Splunk REST API to return something
+other than XML or JSON output. The "echo" handler in this app uses the "raw" format to return its arguments as they were
+received. The "multiformat" handler included in this app provides a slightly more complex example, demonstrating the 
+difference between raw and JSON formats. A URI query parameter is used to request a specific format as part of the 
+request; if no specific format is requested, the request is regarded as invalid and a 204 is returned.
+
+This is a "raw" request. Verbose output from the "curl" command is shown. Note that no content-type is returned. The
+author of the REST handler script could at this point add a "headers" object to the reply to specify specific 
+content handling. 
+```
+$  curl -v -k -u admin:changeme "https://localhost:8089/services/multiformat_persistent?format=raw&input=kilroy_was_here"
+*   Trying ::1...
+* TCP_NODELAY set
+* Connection failed
+* connect to ::1 port 8089 failed: Connection refused
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 8089 (#0)
+* ALPN, offering http/1.1
+* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+* successfully set certificate verify locations:
+*   CAfile: /opt/local/share/curl/curl-ca-bundle.crt
+  CApath: none
+* TLSv1.2 (OUT), TLS header, Certificate Status (22):
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS change cipher, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: CN=SplunkServerDefaultCert; O=SplunkUser
+*  start date: Feb 11 21:42:26 2018 GMT
+*  expire date: Feb 10 21:42:26 2021 GMT
+*  issuer: C=US; ST=CA; L=San Francisco; O=Splunk; CN=SplunkCommonCA; emailAddress=support@splunk.com
+*  SSL certificate verify result: self signed certificate in certificate chain (19), continuing anyway.
+* Server auth using Basic with user 'admin'
+> GET /services/multiformat_persistent?format=raw&input=kilroy_was_here HTTP/1.1
+> Host: localhost:8089
+> Authorization: Basic NOT_A_REAL_TOKEN
+> User-Agent: curl/7.57.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Date: Mon, 12 Feb 2018 00:11:56 GMT
+< Expires: Thu, 26 Oct 1978 00:00:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+< Content-Length: 15
+< Vary: *
+< Connection: Keep-Alive
+< X-Frame-Options: SAMEORIGIN
+< Server: Splunkd
+<
+* Connection #0 to host localhost left intact
+ereh_saw_yorlik
+```
+
+This is a "json" request. By returning the output as an object (in this case, a simple list) that has a JSON 
+representation, splunkd will return the output as JSON. Note the presence of the Content-type header in the output.
+
+```
+$  curl -v -k -u admin:changeme "https://localhost:8089/services/multiformat_persistent?format=json&input=kilroy_was_here"
+*   Trying ::1...
+* TCP_NODELAY set
+* Connection failed
+* connect to ::1 port 8089 failed: Connection refused
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 8089 (#0)
+* ALPN, offering http/1.1
+* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+* successfully set certificate verify locations:
+*   CAfile: /opt/local/share/curl/curl-ca-bundle.crt
+  CApath: none
+* TLSv1.2 (OUT), TLS header, Certificate Status (22):
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS change cipher, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: CN=SplunkServerDefaultCert; O=SplunkUser
+*  start date: Feb 11 21:42:26 2018 GMT
+*  expire date: Feb 10 21:42:26 2021 GMT
+*  issuer: C=US; ST=CA; L=San Francisco; O=Splunk; CN=SplunkCommonCA; emailAddress=support@splunk.com
+*  SSL certificate verify result: self signed certificate in certificate chain (19), continuing anyway.
+* Server auth using Basic with user 'admin'
+> GET /services/multiformat_persistent?format=json&input=kilroy_was_here HTTP/1.1
+> Host: localhost:8089
+> Authorization: Basic YWRtaW46Y2hhbmdlbWU=
+> User-Agent: curl/7.57.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Date: Mon, 12 Feb 2018 00:13:30 GMT
+< Expires: Thu, 26 Oct 1978 00:00:00 GMT
+< Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+< Content-Type: application/json; charset=UTF-8
+< X-Content-Type-Options: nosniff
+< Content-Length: 19
+< Vary: *
+< Connection: Keep-Alive
+< X-Frame-Options: SAMEORIGIN
+< Server: Splunkd
+<
+* Connection #0 to host localhost left intact
+["ereh_saw_yorlik"]
 ```

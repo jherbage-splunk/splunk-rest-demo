@@ -20,7 +20,7 @@ how the various calling conventions will affect the input your script receives.
 - [Invalid context errors](#invalid)
 - [Persistent request payload format](#persistentrequest)
 - [Persistent reply payload format](#persistentreply)
-- [Multiformat requests](#rawrequests)
+- [Multiformat requests](#multiformat)
 
 ### <a name="basic"></a>Basic usage
 
@@ -493,7 +493,7 @@ The new-style persistent REST reply format is documented below.
    }
 ```
 
-## <a name="multiformatrequests"></a>Multiformat Requests
+## <a name="multiformat"></a>Multiformat Requests
 
 One of the key use cases of the persistent REST handler framework is to enable the Splunk REST API to return something
 other than XML or JSON output. The "echo" handler in this app uses the "raw" format to return its arguments as they were
@@ -597,7 +597,7 @@ $  curl -v -k -u admin:changeme "https://localhost:8089/services/multiformat_per
 * Server auth using Basic with user 'admin'
 > GET /services/multiformat_persistent?format=json&input=kilroy_was_here HTTP/1.1
 > Host: localhost:8089
-> Authorization: Basic YWRtaW46Y2hhbmdlbWU=
+> Authorization: Basic NOT_A_REAL_TOKEN
 > User-Agent: curl/7.57.0
 > Accept: */*
 >
@@ -615,4 +615,19 @@ $  curl -v -k -u admin:changeme "https://localhost:8089/services/multiformat_per
 <
 * Connection #0 to host localhost left intact
 ["ereh_saw_yorlik"]
+```
+
+A bad request will result in an HTTP 204 error code, which is achieved by returning a null payload.
+
+```
+$  curl -I -k -u admin:changeme "https://localhost:8089/services/multiformat_persistent"
+HTTP/1.1 204 No Content
+Date: Mon, 12 Feb 2018 00:29:11 GMT
+Expires: Thu, 26 Oct 1978 00:00:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Content-Length: 0
+Vary: *
+Connection: Keep-Alive
+X-Frame-Options: SAMEORIGIN
+Server: Splunkd
 ```

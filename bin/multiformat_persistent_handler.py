@@ -1,6 +1,5 @@
 import os
 import sys
-import base64
 import json
 import logging
 
@@ -46,7 +45,6 @@ class MultiformatPersistentHandler(PersistentServerConnectionApplication):
 
         payload = None
         err_payload = json.dumps({ 'payload': None })
-        # err_payload = json.dumps({ 'payload': None, 'status': 400 })
 
         if not input_string or not output_format:
             return err_payload

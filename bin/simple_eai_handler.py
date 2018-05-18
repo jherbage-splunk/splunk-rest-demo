@@ -20,5 +20,7 @@ class EchoEAIHandler(admin.MConfigHandler):
         # the interface is dictionary-like, confInfo is NOT a dictionary but an object of type ConfigInfo. A KeyError
         # will NOT be raised for the following operations.
         confInfo['stanza1']['attr'] = 'abcd'
+        confInfo['stanza1']['pid'] = os.getpid()
+
 
 admin.init(EchoEAIHandler, admin.CONTEXT_NONE)

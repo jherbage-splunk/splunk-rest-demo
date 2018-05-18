@@ -58,15 +58,20 @@ mode transparently, with no code changes required.
 ## App Contents
 1. Simple persistent handler: `echo_persistent_handler.py`
 
-	This handler is the simplest possible demonstration of the new "raw" REST interface. It echoes all arguments passed
-	into it as output. Usage examples may be found at [echo_persistent_examples.](doc/echo_persistent_examples.md)
+	This handler is the simplest possible demonstration of the new "raw"
+	REST interface. It echoes all arguments passed into it as output.
+	Usage examples may be found at [echo_persistent_examples.](doc/echo_persistent_examples.md)
 
 2. Simple EAI handler: `simple_eai_handler.py`
 
-	This handler is the simplest possible EAI handler, provided solely for the purpose of demonstrating the mechanism 
-	for populating EAI output. It is unlikely to be useful for any serious purpose. Usage examples may be found at 
-	[simple_eai_examples.](doc/simple_eai_examples.md)
-	
+	This handler is the simplest possible EAI handler, provided solely
+	for the purpose of demonstrating the mechanism for populating EAI
+	output. It is unlikely to be useful for any serious purpose. Usage
+	examples may be found at [simple_eai_examples.](doc/simple_eai_examples.md)
+
+3. Persistent handler demonstrating input parameters and output
+	formatting options: `multiformat_persistent_handler.py`.
+
 ###Usage via splunkd
 
 Access to custom REST handlers via splunkd, which listens on port 8089, can be performed from localhost using the "curl"

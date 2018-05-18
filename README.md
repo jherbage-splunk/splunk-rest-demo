@@ -72,7 +72,7 @@ mode transparently, with no code changes required.
 3. Persistent handler demonstrating input parameters and output
 	formatting options: `multiformat_persistent_handler.py`.
 
-###Usage via splunkd
+### Usage via splunkd
 
 Access to custom REST handlers via splunkd, which listens on port 8089, can be performed from localhost using the "curl"
 utility, similar to any other Splunk REST endpoint.
@@ -81,7 +81,7 @@ utility, similar to any other Splunk REST endpoint.
 curl -k -u admin:changeme https://localhost:8089/services/echo_persistent
 ```
 
-###Usage via splunkweb
+### Usage via splunkweb
 
 A REST endpoint can be made accessible on the Splunkweb port (8000) via use of an "expose" stanza in web.conf.
 
@@ -98,7 +98,7 @@ curl -k https://localhost:8000/en-US/splunkd/__raw/services/echo_persistent \
 
 Note that the URL should be rooted at /splunkd/__raw as shown above.
 
-###License
+### License
 
 No license, warranty, or claim of correctness for this code is provided, promised, or implied. This code is provided solely
 for educational purposes and may not reflect the actual state of Splunk's product line. Please direct all complaints to the

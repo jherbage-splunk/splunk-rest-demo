@@ -11,7 +11,7 @@ if sys.platform == "win32":
 from splunk.persistconn.application import PersistentServerConnectionApplication
 
 
-class EchoHandler(PersistentServerConnectionApplication):
+class VirgaApi(PersistentServerConnectionApplication):
     def __init__(self, command_line, command_arg):
         PersistentServerConnectionApplication.__init__(self)
 

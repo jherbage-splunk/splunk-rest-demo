@@ -33,3 +33,13 @@ export = system
 [viewstates]
 access = read : [ * ], write : [ * ]
 export = system
+
+[macros/test_virga-api%282%29]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = nobody
+
+[macros/test_virga-api]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = nobody

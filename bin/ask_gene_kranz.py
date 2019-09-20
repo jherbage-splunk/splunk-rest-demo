@@ -81,8 +81,25 @@ class VirgaApi(PersistentServerConnectionApplication):
         else:
           return {'payload': "Error starting search job - did not get the search ID returned from "+str(serverContent), 'status': 500}
         job_state=self.check_search_finish(timeout,url_path,sessionKey)
+       
+        # Did the job fail?
+        if not job_state == 'DONE':
+          return {'payload': "Search failed", 'status': 500}
 
-        return {'payload': job_state,  # Payload of the request.
+        # return the output of the job
+        try:
+          jobOutput=splunk.rest.simpleRequest(url_path+"/results?output_mode=json",sessionKey=sessionKey,postargs=None,method='GET',raiseAllErrors=True) 
+          jobOutput=json.loads(str(jobOutput[1]))
+
+          if 'results' in jobOutput:
+            jobOutput=json.dumps(jobOutput['results'], indent=4)
+          else:
+            jobOutput="no results"
+        except Exception as e:
+          return {'payload': "Error getting results from the job: "+str(e), 'status': 500} 
+
+        # return the result
+        return {'payload': jobOutput,  # Payload of the request.
                 'status': 200          # HTTP status code
         }
 

@@ -31,6 +31,9 @@ class VirgaApi(PersistentServerConnectionApplication):
       "test_no_args": {
                 "macro": "test_virga-api"
               },
+      "test_long_running": {
+                "macro": "test_virga-api_long_running"
+              },
     }
 
     # default timeout to wait for search to complete - can be overridden by user up the max specified here - we will kill your search if you reach the max!
@@ -61,9 +64,13 @@ class VirgaApi(PersistentServerConnectionApplication):
         except:
           return {'payload': "Unexpected error - malformed request", 'status': 500}
 
-        sessionKey = auth.getSessionKey('admin','changeme')
+        in_args = self.parse_in_string(in_string)
+        sessionKey = in_args['session']['authtoken']
         url_path="/services/search/jobs"
-        url_args={"search": "`"+macro+"("+args+")`"}
+        if len(args) > 0:
+          url_args={"search": "`"+macro+"("+args+")`"}
+        else:
+          url_args={"search": "`"+macro+"`"}
         try:
           serverContent = splunk.rest.simpleRequest(url_path,sessionKey=sessionKey,postargs=url_args,method='POST',raiseAllErrors=True)
         except Exception as ex:
@@ -84,7 +91,7 @@ class VirgaApi(PersistentServerConnectionApplication):
        
         # Did the job fail?
         if not job_state == 'DONE':
-          return {'payload': "Search failed", 'status': 500}
+          return {'payload': "Search failed. Job state is "+job_state, 'status': 500}
 
         # return the output of the job
         try:
@@ -113,6 +120,7 @@ class VirgaApi(PersistentServerConnectionApplication):
         # if we run out of time cancel the search
         if int(time.time()) > timeout_time:
           splunk.rest.simpleRequest(path,sessionKey=sessionKey,postargs=None,method='DELETE',raiseAllErrors=True)
+          job_state="TIMEOUT"
           break
         else:
           job_state=self.get_job_state(path,sessionKey)
@@ -172,3 +180,34 @@ class VirgaApi(PersistentServerConnectionApplication):
           arg_values.append(arg_value)
 
       return "\""+"\",\"".join(arg_values)+"\""
+
+    def parse_in_string(self, in_string):
+
+      params = json.loads(in_string)
+
+      params['method'] = params['method'].lower()
+
+      params['form_parameters'] = self.convert_to_dict(params.get('form', []))
+      params['query_parameters'] = self.convert_to_dict(params.get('query', []))
+
+      return params
+
+    def convert_to_dict(self, query):
+      parameters = {}
+
+      for key, val in query:
+
+        # If the key is already in the list, but the existing entry isn't a list then make the
+        # existing entry a list and add thi one
+        if key in parameters and not isinstance(parameters[key], list):
+          parameters[key] = [parameters[key], val]
+
+        # If the entry is already included as a list, then just add the entry
+        elif key in parameters:
+          parameters[key].append(val)
+
+        # Otherwise, just add the entry
+        else:
+          parameters[key] = val
+
+      return parameters

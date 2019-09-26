@@ -1,0 +1,45 @@
+import os
+import sys
+import splunk
+import splunk.auth as auth
+import json
+
+if sys.platform == "win32":
+    import msvcrt
+    # Binary mode is required for persistent mode on Windows.
+    msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+    msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
+    msvcrt.setmode(sys.stderr.fileno(), os.O_BINARY)
+
+from splunk.persistconn.application import PersistentServerConnectionApplication
+
+
+class VirgaApi(PersistentServerConnectionApplication):
+    def __init__(self, command_line, command_arg):
+        PersistentServerConnectionApplication.__init__(self)
+
+    def handle(self, in_string):
+        # get the stack from args passed in - if no stack throw an exception
+        try: 
+          query=json.loads(in_string)["query"]
+          if 'stack' in query:
+            return {'error': "stack is a mandatory input",
+              'status': 500          # HTTP status code
+          }
+          else:
+            stack=query['stack']       
+        except:
+          return {'error': "stack is a mandatory input and could not be parsed from the query",
+              'status': 500          # HTTP status code
+          } 
+        sessionKey = auth.getSessionKey('admin','changeme')
+        url_path="/services/search/jobs"
+        url_args={"search": "search index=\"customer_internal\" |timechart span=1h count", "earliest_time": "-2h@h", "latest_time": "-0h@h"}
+        try:
+          serverContent = splunk.rest.simpleRequest(url_path,sessionKey=sessionKey,postargs=url_args,method='POST',raiseAllErrors=True)
+          error="no error"
+        except Exception as ex:
+          error="got this error: "+str(ex.message)
+        return {'payload': "stack is "+stack,  # Payload of the request.
+                'status': 200          # HTTP status code
+        }

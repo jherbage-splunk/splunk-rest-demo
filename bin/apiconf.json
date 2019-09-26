@@ -1,0 +1,17 @@
+{
+  "operations":{
+     "test":{
+        "macro": "test_virga-api",
+        "args": [ "stack","info" ]
+    },
+    "test_no_args":{
+        "macro": "test_virga-api"
+    },
+    "test_long_running":{
+        "macro": "test_virga-api_long_running"
+    }
+  },
+  "max_search_timeout": 180,
+  "search_timeout": 30,
+  "polling_interval": 5
+}

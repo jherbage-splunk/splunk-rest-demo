@@ -20,29 +20,11 @@ from splunk.persistconn.application import PersistentServerConnectionApplication
 
 class VirgaApi(PersistentServerConnectionApplication):
 
-
-    # These operations define the scope of the allowed macros with the args expected for each macro (we need the args to check if their values are provided)
-    # The args array needs to be in the order the args are passed to the macro
-    operations={
-      "test": {
-                "macro": "test_virga-api",
-                "args": ["stack","info"]
-              },
-      "test_no_args": {
-                "macro": "test_virga-api"
-              },
-      "test_long_running": {
-                "macro": "test_virga-api_long_running"
-              },
-    }
-
-    # default timeout to wait for search to complete - can be overridden by user up the max specified here - we will kill your search if you reach the max!
-    max_search_timeout=180
-    search_timeout=30
-    polling_interval=5
-
     def __init__(self, command_line, command_arg):
         PersistentServerConnectionApplication.__init__(self)
+        apifilepath = os.path.join(os.environ['SPLUNK_HOME'], 'etc', 'apps', 'virga-api', 'bin', "apiconf.json")
+        with open(apifilepath) as json_data_file:
+          self.cfg = json.load(json_data_file)
 
     def handle(self, in_string):
 
@@ -52,10 +34,10 @@ class VirgaApi(PersistentServerConnectionApplication):
           try:
             timeout=self.get_search_timeout(query)
             operation=self.check_op(query)
-            macro=self.operations[operation]["macro"]
+            macro=self.cfg['operations'][operation]["macro"]
             expected_args=[]
-            if "args" in self.operations[operation]:
-              expected_args=self.operations[operation]["args"]
+            if "args" in self.cfg['operations'][operation]:
+              expected_args=self.cfg['operations'][operation]["args"]
 
             args=self.check_macro_args(query,expected_args)
           except Exception as e:
@@ -116,7 +98,7 @@ class VirgaApi(PersistentServerConnectionApplication):
       job_state=self.get_job_state(path,sessionKey)
        
       while not job_state in ['DONE','FAILED']:
-        time.sleep(self.polling_interval) 
+        time.sleep(self.cfg['polling_interval']) 
         # if we run out of time cancel the search
         if int(time.time()) > timeout_time:
           splunk.rest.simpleRequest(path,sessionKey=sessionKey,postargs=None,method='DELETE',raiseAllErrors=True)
@@ -149,20 +131,20 @@ class VirgaApi(PersistentServerConnectionApplication):
       else:
         operation=operation
 
-      if operation not in self.operations:
+      if operation not in self.cfg['operations']:
         return self.return_error("operation "+operation+" is not supported")
       else:
         return operation
     
     def get_search_timeout(self,query):
     
-      timeout=self.search_timeout
+      timeout=self.cfg['search_timeout']
       for i in range(len(query)):
         if query[i][0] == 'search_timeout':
           timeout=int(query[i][1])
     
-      if timeout > self.max_search_timeout:
-        return self.return_error("search_timeout is greater than permitted max value of "+str(self.max_search_timeout))
+      if timeout > self.cfg['max_search_timeout']:
+        return self.return_error("search_timeout is greater than permitted max value of "+str(self.cfg['max_search_timeout']))
       else:
         return timeout
 
